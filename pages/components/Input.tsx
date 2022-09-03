@@ -2,7 +2,7 @@ import React from "react";
 
 function Input({ placeholder, set }: any) {
 	return (
-		<div className="relative w-1/2 ">
+		<div className="relative md:w-1/2 ">
 			<label className="sr-only" htmlFor={placeholder}>
 				{placeholder}
 			</label>

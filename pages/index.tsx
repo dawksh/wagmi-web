@@ -42,11 +42,11 @@ const Home: NextPage = () => {
 				</label>
 			</span>
 			{preview ? (
-				<span className="mx-40 mt-10 ">
+				<span className="lg:mx-40 mx-5 mt-10 border-2 border-gray-400 p-4 rounded-md ">
 					<MarkdownPreview markdown={agreement} />
 				</span>
 			) : (
-				<span className="mx-40 mt-10">
+				<span className="lg:mx-40 mx-5 mt-10">
 					<TextArea val={agreement} set={setAgreement} />
 				</span>
 			)}
