@@ -50,7 +50,7 @@ const Home: NextPage = () => {
 					<TextArea val={agreement} set={setAgreement} />
 				</span>
 			)}
-			<span className="flex justify-center m-6">
+			<span className="flex justify-center my-6">
 				<Input placeholder={"Wallet Address"} set={setAddress} />
 			</span>
 
