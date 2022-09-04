@@ -8,7 +8,7 @@ function Input({ placeholder, set }: any) {
 			</label>
 
 			<input
-				className="w-full py-4 pl-3 pr-16 text-sm border-2 border-gray-200 rounded-lg"
+				className="w-full py-4 pl-3 pr-3 text-sm border-2 border-gray-200 rounded-lg"
 				id="email"
 				type="text"
 				placeholder={placeholder}

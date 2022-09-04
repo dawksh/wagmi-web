@@ -4,16 +4,47 @@ import Input from "./components/Input";
 import TextArea from "./components/TextArea";
 import Head from "next/head";
 import MarkdownPreview from "./components/MarkdownPreview";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import toast from "react-hot-toast";
+import { useAccount, useSignMessage } from "wagmi";
+import { ipfs } from "../utils/IPFS";
 
 const Home: NextPage = () => {
 	const [agreement, setAgreement] = useState<string>();
 	const [address, setAddress] = useState<string>();
 	const [preview, setPreview] = useState<boolean>(false);
+	const [cid, setCid] = useState<string>();
+
+	const { isConnected } = useAccount();
+
+	const { data, isSuccess, signMessageAsync } = useSignMessage({
+		message: cid,
+	});
 
 	const createAgreement = async () => {
-		if (ethers.utils.isAddress(address as string) && agreement) {
+		if (
+			isConnected &&
+			ethers.utils.isAddress(address as string) &&
+			agreement
+		) {
+			const { cid: cidHash } = await ipfs.add(agreement);
+			setCid(cidHash.toString());
+			console.log("Added to IPFS with hash ", cid);
+			ipfs.pin.add(cidHash);
+			await signMessageAsync();
+			const { cid: agreementHash } = await ipfs.add(
+				JSON.stringify({
+					signature: data,
+					agreement: cid,
+				})
+			);
+			ipfs.pin.add(agreementHash);
+			toast.success("Succesfully created agreement!");
+		} else {
+			toast.error(
+				"Please check the agreement and wallet address & make sure wallet is connected."
+			);
 		}
 	};
 
