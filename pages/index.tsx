@@ -36,20 +36,25 @@ const Home: NextPage = () => {
 			setCid(cidHash.toString());
 			console.log("Added to IPFS with hash ", cid);
 			ipfs.pin.add(cidHash);
-			try {
-				await signMessageAsync();
-				const { cid: agreementHash } = await ipfs.add(
-					JSON.stringify({
-						signature: data,
-						agreement: cid,
-					})
-				);
-				ipfs.pin.add(agreementHash);
-				toast.success("Succesfully created agreement!");
-				setLoading(false);
-			} catch (e) {
-				console.log(e);
-				setLoading(false);
+			if (cid) {
+				try {
+					await signMessageAsync();
+					const { cid: agreementHash } = await ipfs.add(
+						JSON.stringify({
+							signature: data,
+							agreement: cid,
+						})
+					);
+					ipfs.pin.add(agreementHash);
+					toast.success("Succesfully created agreement!");
+					setCreated(true);
+					setLoading(false);
+				} catch (e) {
+					console.log(e);
+					setLoading(false);
+				}
+			} else {
+				setTimeout(createAgreement, 100);
 			}
 		} else {
 			setLoading(false);
@@ -65,8 +70,14 @@ const Home: NextPage = () => {
 				<title>Wagmi Signatures</title>
 			</Head>
 			<Navbar />
-			{created && <Modal set={setCreated} />}
-			<span className="flex justify-center mt-6">
+			{created && <Modal set={setCreated} cid={cid} />}
+			<span className=" text-xs mt-8 flex justify-center">
+				<p>
+					Use <a href="https://dillinger.io/">Dillinger</a> for
+					writing markdown easily!
+				</p>
+			</span>
+			<span className="flex justify-center mt-6 ">
 				<label
 					htmlFor="default-toggle"
 					className="inline-flex relative items-center cursor-pointer"
@@ -75,15 +86,16 @@ const Home: NextPage = () => {
 						type="checkbox"
 						value=""
 						id="default-toggle"
-						className="sr-only peer"
+						className="sr-only peer "
 						onChange={(e) => setPreview(e.target.checked)}
 					/>
-					<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+					<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 -z-1"></div>
 					<span className="ml-3 text-md font-medium text-gray-900">
 						Preview
 					</span>
 				</label>
 			</span>
+
 			{preview ? (
 				<span className="lg:mx-40 mx-5 mt-10 border-2 border-gray-400 p-4 rounded-md ">
 					<MarkdownPreview markdown={agreement} />
@@ -102,7 +114,7 @@ const Home: NextPage = () => {
 					disabled={loading}
 					className="p-3 text-white bg-blue-600 rounded-md top-1/2 right-4 hover:bg-sky-700 ease-in-out duration-300"
 					type="button"
-					onClick={() => setCreated(true)}
+					onClick={createAgreement}
 				>
 					{loading ? (
 						<>
