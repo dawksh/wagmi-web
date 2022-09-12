@@ -7,23 +7,82 @@ import MarkdownPreview from "./components/MarkdownPreview";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import toast from "react-hot-toast";
-import { useAccount, useSignMessage } from "wagmi";
+import {
+	useAccount,
+	useContract,
+	useContractWrite,
+	usePrepareContractWrite,
+	useProvider,
+	useSignMessage,
+} from "wagmi";
 import { ipfs } from "../utils/IPFS";
 import Modal from "./components/Modal";
+import ABI from "../utils/WAGMI.json";
 
 const Home: NextPage = () => {
 	const [agreement, setAgreement] = useState<string>();
 	const [address, setAddress] = useState<string>();
 	const [preview, setPreview] = useState<boolean>(false);
 	const [cid, setCid] = useState<string>();
+	let hashAgreement;
 	const [loading, setLoading] = useState<boolean>(false);
 	const [created, setCreated] = useState<boolean>(false);
 
-	const { isConnected } = useAccount();
-
-	const { data, isSuccess, signMessageAsync } = useSignMessage({
+	const { isConnected, address: signee } = useAccount();
+	const provider = useProvider();
+	const { data, signMessageAsync } = useSignMessage({
 		message: cid,
 	});
+	const { config } = usePrepareContractWrite({
+		addressOrName: "0xC70b8Db42e3658fC8a3615451e93AaF614a8abFD",
+		contractInterface: ABI.abi,
+		functionName: "addAgreement",
+		args: [
+			{
+				id: 0,
+				signer: signee,
+				agreement: hashAgreement,
+				signature: data,
+				isSigneed: false,
+			},
+		],
+	});
+
+	const {
+		data: contractWrite,
+		isLoading,
+		isSuccess,
+		write,
+	} = useContractWrite(config);
+
+	useEffect(() => {
+		(async function () {
+			if (cid) {
+				try {
+					await signMessageAsync();
+					const { cid: agreementHash } = await ipfs.add(
+						JSON.stringify({
+							signature: data,
+							agreement: cid,
+						})
+					);
+					console.log(
+						"Signed Agreement with signature, ",
+						data as string
+					);
+					ipfs.pin.add(agreementHash);
+					hashAgreement = agreementHash;
+					write?.();
+					toast.success("Succesfully created agreement!");
+					setCreated(true);
+					setLoading(false);
+				} catch (e) {
+					console.log(e);
+					setLoading(false);
+				}
+			}
+		})();
+	}, [cid]);
 
 	const createAgreement = async () => {
 		if (
@@ -34,28 +93,8 @@ const Home: NextPage = () => {
 			setLoading(true);
 			const { cid: cidHash } = await ipfs.add(agreement);
 			setCid(cidHash.toString());
-			console.log("Added to IPFS with hash ", cid);
+			console.log("Added to IPFS with hash ", cidHash);
 			ipfs.pin.add(cidHash);
-			if (cid) {
-				try {
-					await signMessageAsync();
-					const { cid: agreementHash } = await ipfs.add(
-						JSON.stringify({
-							signature: data,
-							agreement: cid,
-						})
-					);
-					ipfs.pin.add(agreementHash);
-					toast.success("Succesfully created agreement!");
-					setCreated(true);
-					setLoading(false);
-				} catch (e) {
-					console.log(e);
-					setLoading(false);
-				}
-			} else {
-				setTimeout(createAgreement, 100);
-			}
 		} else {
 			setLoading(false);
 			toast.error(
