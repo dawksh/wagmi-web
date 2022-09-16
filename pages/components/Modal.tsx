@@ -6,7 +6,7 @@ function Modal({ set, cid }: any) {
 		set(false);
 	};
 	const copy = () => {
-		navigator.clipboard.writeText(`https://ipfs.io/ipfs/${cid}`);
+		navigator.clipboard.writeText(`${window.location.href}${cid}`);
 		toast.success("Copied to clipboard!");
 	};
 	return (
@@ -37,14 +37,14 @@ function Modal({ set, cid }: any) {
 								<div className="relative">
 									<label className="sr-only" htmlFor="email">
 										{" "}
-										Email{" "}
+										Link{" "}
 									</label>
 
 									<input
 										className="w-full py-4 pl-3 pr-16 text-sm border-2 border-gray-200 rounded-lg"
 										id="email"
 										placeholder="Link"
-										value={`https://ipfs.io/ipfs/${cid}`}
+										value={`${window.location.href}${cid}`}
 										readOnly={true}
 									/>
 

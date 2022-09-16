@@ -13,6 +13,7 @@ import {
 	useContractWrite,
 	usePrepareContractWrite,
 	useProvider,
+	useSigner,
 	useSignMessage,
 } from "wagmi";
 import { ipfs } from "../utils/IPFS";
@@ -24,65 +25,20 @@ const Home: NextPage = () => {
 	const [address, setAddress] = useState<string>();
 	const [preview, setPreview] = useState<boolean>(false);
 	const [cid, setCid] = useState<string>();
-	let hashAgreement;
 	const [loading, setLoading] = useState<boolean>(false);
 	const [created, setCreated] = useState<boolean>(false);
+	const [id, setId] = useState<string>();
+	let hashAgreement;
+	let agreementHash;
 
 	const { isConnected, address: signee } = useAccount();
-	const provider = useProvider();
+	const { data: signer } = useSigner();
+
 	const { data, signMessageAsync } = useSignMessage({
-		message: cid,
-	});
-	const { config } = usePrepareContractWrite({
-		addressOrName: "0xC70b8Db42e3658fC8a3615451e93AaF614a8abFD",
-		contractInterface: ABI.abi,
-		functionName: "addAgreement",
-		args: [
-			{
-				id: 0,
-				signer: signee,
-				agreement: hashAgreement,
-				signature: data,
-				isSigneed: false,
-			},
-		],
+		message: agreementHash,
 	});
 
-	const {
-		data: contractWrite,
-		isLoading,
-		isSuccess,
-		write,
-	} = useContractWrite(config);
-
-	useEffect(() => {
-		(async function () {
-			if (cid) {
-				try {
-					await signMessageAsync();
-					const { cid: agreementHash } = await ipfs.add(
-						JSON.stringify({
-							signature: data,
-							agreement: cid,
-						})
-					);
-					console.log(
-						"Signed Agreement with signature, ",
-						data as string
-					);
-					ipfs.pin.add(agreementHash);
-					hashAgreement = agreementHash;
-					write?.();
-					toast.success("Succesfully created agreement!");
-					setCreated(true);
-					setLoading(false);
-				} catch (e) {
-					console.log(e);
-					setLoading(false);
-				}
-			}
-		})();
-	}, [cid]);
+	let contract: ethers.Contract;
 
 	const createAgreement = async () => {
 		if (
@@ -90,11 +46,46 @@ const Home: NextPage = () => {
 			ethers.utils.isAddress(address as string) &&
 			agreement
 		) {
+			contract = new ethers.Contract(
+				"0x652cADF0120a1A55F583F5B2dcC001DF577D5c8B",
+				ABI.abi,
+				signer as any
+			);
 			setLoading(true);
 			const { cid: cidHash } = await ipfs.add(agreement);
 			setCid(cidHash.toString());
-			console.log("Added to IPFS with hash ", cidHash);
+			console.log("Added to IPFS with hash ", cidHash.toString());
 			ipfs.pin.add(cidHash);
+			try {
+				const msg = await signMessageAsync({
+					message: cidHash.toString(),
+				});
+				const { cid: agreementHash } = await ipfs.add(
+					JSON.stringify({
+						signature: msg,
+						agreement: cid,
+					})
+				);
+				console.log(agreementHash.toString());
+				console.log("Signed Agreement with signature, ", msg);
+				ipfs.pin.add(agreementHash);
+				console.log(contract);
+				let txn = await contract.addAgreement({
+					id: 0,
+					signer: signee,
+					agreement: agreementHash.toString(),
+					signature: data,
+					isSigned: false,
+				});
+				let receipt = await txn.wait();
+				setId(receipt.events[0].args.id.toString());
+				toast.success("Succesfully created agreement!");
+				setCreated(true);
+				setLoading(false);
+			} catch (e) {
+				console.log(e);
+				setLoading(false);
+			}
 		} else {
 			setLoading(false);
 			toast.error(
@@ -108,8 +99,7 @@ const Home: NextPage = () => {
 			<Head>
 				<title>Wagmi Signatures</title>
 			</Head>
-			<Navbar />
-			{created && <Modal set={setCreated} cid={cid} />}
+			{created && <Modal set={setCreated} cid={id} />}
 			<span className=" text-xs mt-8 flex justify-center">
 				<p>
 					Use <a href="https://dillinger.io/">Dillinger</a> for
