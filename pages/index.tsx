@@ -28,7 +28,6 @@ const Home: NextPage = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [created, setCreated] = useState<boolean>(false);
 	const [id, setId] = useState<string>();
-	let hashAgreement;
 	let agreementHash;
 
 	const { isConnected, address: signee } = useAccount();
@@ -47,7 +46,7 @@ const Home: NextPage = () => {
 			agreement
 		) {
 			contract = new ethers.Contract(
-				"0x652cADF0120a1A55F583F5B2dcC001DF577D5c8B",
+				"0x2745aB0234a88DE38b46AA6791ec3AE204D06717",
 				ABI.abi,
 				signer as any
 			);

@@ -6,6 +6,46 @@
     {
       "inputs": [
         {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "signer",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "agreement",
+              "type": "string"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bool",
+              "name": "isSigned",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct WAGMI.Agreement",
+          "name": "_agreement",
+          "type": "tuple"
+        }
+      ],
+      "name": "addAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "contract IWorldID",
           "name": "_worldId",
           "type": "address"
@@ -60,6 +100,39 @@
       "type": "event"
     },
     {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "root",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nullifierHash",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[8]",
+          "name": "proof",
+          "type": "uint256[8]"
+        }
+      ],
+      "name": "signAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -83,46 +156,6 @@
       ],
       "name": "Signed",
       "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "signer",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "agreement",
-              "type": "string"
-            },
-            {
-              "internalType": "bytes",
-              "name": "signature",
-              "type": "bytes"
-            },
-            {
-              "internalType": "bool",
-              "name": "isSigned",
-              "type": "bool"
-            }
-          ],
-          "internalType": "struct WAGMI.UnSignedAgreement",
-          "name": "_agreement",
-          "type": "tuple"
-        }
-      ],
-      "name": "addAgreement",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "inputs": [
@@ -166,95 +199,8 @@
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "message",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes",
-          "name": "signature",
-          "type": "bytes"
-        },
-        {
           "internalType": "uint256",
           "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "receiver",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "root",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nullifierHash",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256[8]",
-          "name": "proof",
-          "type": "uint256[8]"
-        }
-      ],
-      "name": "signAgreement",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "signerToAgreementMapping",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "signer",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "agreement",
-          "type": "string"
-        },
-        {
-          "internalType": "bytes",
-          "name": "signature",
-          "type": "bytes"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "signer",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_index",
           "type": "uint256"
         },
         {
