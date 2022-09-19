@@ -6,7 +6,9 @@ function Modal({ set, cid }: any) {
 		set(false);
 	};
 	const copy = () => {
-		navigator.clipboard.writeText(`${window.location.href}${cid}`);
+		navigator.clipboard.writeText(
+			`${window.location.href}agreement/${cid}`
+		);
 		toast.success("Copied to clipboard!");
 	};
 	return (
@@ -44,7 +46,7 @@ function Modal({ set, cid }: any) {
 										className="w-full py-4 pl-3 pr-16 text-sm border-2 border-gray-200 rounded-lg"
 										id="email"
 										placeholder="Link"
-										value={`${window.location.href}${cid}`}
+										value={`${window.location.href}agreement/${cid}`}
 										readOnly={true}
 									/>
 

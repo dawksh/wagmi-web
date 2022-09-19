@@ -63,7 +63,7 @@ const Home: NextPage = () => {
 				const { cid: agreementHash } = await ipfs.add(
 					JSON.stringify({
 						signature: msg,
-						agreement: cid,
+						agreement: cidHash,
 					})
 				);
 				console.log(agreementHash.toString());
@@ -72,9 +72,9 @@ const Home: NextPage = () => {
 				console.log(contract);
 				let txn = await contract.addAgreement({
 					id: 0,
-					signer: signee,
-					agreement: agreementHash.toString(),
-					signature: data,
+					signer: address,
+					agreement: cidHash.toString(),
+					signature: msg,
 					isSigned: false,
 				});
 				let receipt = await txn.wait();
