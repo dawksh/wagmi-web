@@ -41,7 +41,7 @@ function Modal({ set, cid }: any) {
 										className="w-full py-4 pl-3 pr-16 text-sm border-2 border-gray-200 rounded-lg"
 										id="email"
 										placeholder="Link"
-										value={`${window?.location.href}agreement/${cid}`}
+										value={`https://wagmi-web/agreement/${cid}`}
 										readOnly={true}
 									/>
 
