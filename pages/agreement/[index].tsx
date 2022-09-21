@@ -22,7 +22,7 @@ type ProofType = {
 	proof: string;
 };
 
-function index({ res }: any) {
+function Index({ res }: any) {
 	const router = useRouter();
 	const { query } = router;
 	const [cid, setCid] = useState();
@@ -128,7 +128,7 @@ function index({ res }: any) {
 	);
 }
 
-export default index;
+export default Index;
 
 export async function getServerSideProps({ query }: any) {
 	const provider = new ethers.providers.JsonRpcProvider(
