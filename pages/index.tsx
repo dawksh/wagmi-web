@@ -46,7 +46,7 @@ const Home: NextPage = () => {
 			agreement
 		) {
 			contract = new ethers.Contract(
-				"0x2745aB0234a88DE38b46AA6791ec3AE204D06717",
+				"0xCb4aD097Aa4E40756EfFaEa3085F1a910DdEd375",
 				ABI.abi,
 				signer as any
 			);

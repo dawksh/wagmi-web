@@ -52,7 +52,7 @@ function index({ res }: any) {
 			});
 
 			contract = new ethers.Contract(
-				"0x2745aB0234a88DE38b46AA6791ec3AE204D06717",
+				"0xCb4aD097Aa4E40756EfFaEa3085F1a910DdEd375",
 				ABI.abi,
 				signer as any
 			);
@@ -74,20 +74,26 @@ function index({ res }: any) {
 
 	return (
 		<div className="flex justify-center flex-col p-10 ">
-			<div className="my-4">
-				<WorldIDWidget
-					actionId="wid_staging_540388d46bc3d34e6451300bc77bb782" // obtain this from developer.worldcoin.org
-					signal="my_signal"
-					enableTelemetry
-					onSuccess={(verificationResponse) => {
-						console.log("response: ", verificationResponse);
-						setProof(verificationResponse);
-					}} // you'll actually want to pass the proof to the API or your smart contract
-					onError={(error) => console.error(error)}
-				/>
+			<div className="my-4 flex justify-center">
+				{isConnected ? (
+					<WorldIDWidget
+						actionId="wid_staging_540388d46bc3d34e6451300bc77bb782" // obtain this from developer.worldcoin.org
+						signal={address}
+						enableTelemetry
+						onSuccess={(verificationResponse) => {
+							console.log("response: ", verificationResponse);
+							setProof(verificationResponse);
+						}}
+						onError={(error) => console.error(error)}
+					/>
+				) : (
+					<div className="flex justify-center text-lg font-semibold p-4">
+						Please Connect Wallet
+					</div>
+				)}
 			</div>
-			{proof && (
-				<>
+			{proof ? (
+				<div className="flex justify-center flex-col">
 					<span className="my-4">Agreement: </span>
 					<div className="border-2 border-gray-400 p-4 rounded-md">
 						{cid && <MarkdownPreview markdown={cid} />}
@@ -98,13 +104,25 @@ function index({ res }: any) {
 							{ethers.utils.verifyMessage(r[2], r[3])}
 						</div>
 					)}
-					<button
-						onClick={signAgreement}
-						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-					>
-						Sign
-					</button>
-				</>
+					<div className="flex justify-center ">
+						<button
+							disabled={r[4]}
+							onClick={signAgreement}
+							className={`${
+								!r[4]
+									? " bg-blue-500 hover:bg-blue-700"
+									: "bg-green-500 cursor-not-allowed "
+							} text-white font-bold py-3 px-4 rounded-full text-center`}
+						>
+							{!r[4] ? "Sign" : "Already Signed"}
+						</button>
+					</div>
+				</div>
+			) : (
+				<div className="flex justify-center">
+					{isConnected &&
+						"Please Prove Liveness using Worldcoin to view and sign agreement."}
+				</div>
 			)}
 		</div>
 	);
@@ -120,7 +138,7 @@ export async function getServerSideProps({ query }: any) {
 	const index = query.index;
 
 	const contract = new ethers.Contract(
-		"0x2745aB0234a88DE38b46AA6791ec3AE204D06717",
+		"0xCb4aD097Aa4E40756EfFaEa3085F1a910DdEd375",
 		ABI.abi,
 		provider
 	);
