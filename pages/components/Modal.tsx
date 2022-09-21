@@ -6,10 +6,12 @@ function Modal({ set, cid }: any) {
 		set(false);
 	};
 	const copy = () => {
-		navigator.clipboard.writeText(
-			`${window.location.href}agreement/${cid}`
-		);
-		toast.success("Copied to clipboard!");
+		if (window) {
+			navigator.clipboard.writeText(
+				`${window.location.href}agreement/${cid}`
+			);
+			toast.success("Copied to clipboard!");
+		}
 	};
 	return (
 		<div className="z-10">

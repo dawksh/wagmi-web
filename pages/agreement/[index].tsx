@@ -10,6 +10,7 @@ import axios from "axios";
 import MarkdownPreview from "../components/MarkdownPreview";
 import { useAccount, useSigner, useSignMessage } from "wagmi";
 import toast from "react-hot-toast";
+import Head from "next/head";
 
 const WorldIDWidget = dynamic<WidgetProps>(
 	() => import("@worldcoin/id").then((mod) => mod.WorldIDWidget),
@@ -29,7 +30,6 @@ function Index({ res }: any) {
 	const [proof, setProof] = useState<ProofType>();
 	const r = JSON.parse(res);
 	let contract: ethers.Contract;
-	console.log(r);
 	const { data: signer } = useSigner();
 	const { address, isConnected } = useAccount();
 	const { signMessageAsync } = useSignMessage();
@@ -74,6 +74,9 @@ function Index({ res }: any) {
 
 	return (
 		<div className="flex justify-center flex-col p-10 ">
+			<Head>
+				<title>Sign Agreement | Wagmi Signatures</title>
+			</Head>
 			<div className="my-4 flex justify-center">
 				{isConnected ? (
 					<WorldIDWidget
