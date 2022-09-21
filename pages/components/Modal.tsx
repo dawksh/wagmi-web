@@ -1,18 +1,11 @@
 import React from "react";
 import toast from "react-hot-toast";
 
-function Modal({ set, cid }: any) {
+function Modal({ set, cid, copy }: any) {
 	const close = () => {
 		set(false);
 	};
-	const copy = () => {
-		if (window) {
-			navigator.clipboard.writeText(
-				`${window.location.href}agreement/${cid}`
-			);
-			toast.success("Copied to clipboard!");
-		}
-	};
+
 	return (
 		<div className="z-10">
 			<div className="relative flex justify-center items-center">
