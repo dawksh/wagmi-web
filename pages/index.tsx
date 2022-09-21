@@ -93,21 +93,12 @@ const Home: NextPage = () => {
 		}
 	};
 
-	const copy = () => {
-		if (typeof window !== "undefined") {
-			navigator.clipboard.writeText(
-				`${window.location.href}agreement/${cid}`
-			);
-			toast.success("Copied to clipboard!");
-		}
-	};
-
 	return (
 		<div className="flex justify-center flex-space flex-col">
 			<Head>
 				<title>Wagmi Signatures</title>
 			</Head>
-			{created && <Modal set={setCreated} cid={id} copy={copy} />}
+			{created && <Modal set={setCreated} cid={id} />}
 			<span className=" text-xs mt-8 flex justify-center">
 				<p>
 					Use <a href="https://dillinger.io/">Dillinger</a> for

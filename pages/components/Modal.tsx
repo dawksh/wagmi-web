@@ -1,7 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 
-function Modal({ set, cid, copy }: any) {
+function Modal({ set, cid }: any) {
 	const close = () => {
 		set(false);
 	};
@@ -48,7 +48,6 @@ function Modal({ set, cid, copy }: any) {
 									<button
 										className="absolute p-2 text-white bg-blue-600 rounded-full -translate-y-1/2 top-1/2 right-4"
 										type="button"
-										onClick={copy}
 									>
 										<svg
 											className="w-4 h-4"
